@@ -12,7 +12,8 @@ object NaiveBayes {
    *          values as the value
    *
    */
-  def countAttributeValues(data:List[Map[String, Any]], attribList:String): Map[Any,Int]= ???
+  def countAttributeValues(data:List[Map[String, Any]], attribList:String): Map[Any,Int]=
+    data.map(x => x(attribList)).groupBy(x => x).view.mapValues(_.size).toMap
 
   /**
    * Extracts all attribute names that occur in a data set
