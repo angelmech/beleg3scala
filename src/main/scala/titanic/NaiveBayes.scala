@@ -46,7 +46,9 @@ object NaiveBayes {
    * @return A Map that consists of all classes (as key) and their corresponding prior propabilities.
    *
    */
-  def calcPriorPropabilities(data:List[Map[String, Any]], classAttrib:String):Map[Any,Double]= ???
+  def calcPriorPropabilities(data:List[Map[String, Any]], classAttrib:String):Map[Any,Double]=
+    val classCounts = countAttributeValues(data, classAttrib)
+    classCounts.map(x => (x._1, x._2.toDouble / data.size))
 
   /**
    * This function should count for each class and attribute how often an
@@ -64,7 +66,8 @@ object NaiveBayes {
    *
    */
   def calcAttribValuesForEachClass(data:List[Map[String, Any]], classAttrib:String):
-  Map[Any, Set[(String, Map[Any, Int])]] = ???
+  Map[Any, Set[(String, Map[Any, Int])]] =
+    val 
 
   /**
    * This function should calculate the conditional propabilities for each class and attribute.
