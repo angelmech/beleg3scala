@@ -67,7 +67,12 @@ object NaiveBayes {
    */
   def calcAttribValuesForEachClass(data:List[Map[String, Any]], classAttrib:String):
   Map[Any, Set[(String, Map[Any, Int])]] =
-    val 
+    val classes = getAttributeValues(data)(classAttrib)
+    val attributes = getAttributes(data) - classAttrib
+    classes.map(c => (c, attributes.map(a => (a, data.filter(x => x(classAttrib) == c).
+      map(_(a)).groupBy(identity).view.mapValues(_.size).toMap)))).toMap
+
+
 
   /**
    * This function should calculate the conditional propabilities for each class and attribute.
@@ -85,7 +90,8 @@ object NaiveBayes {
    *         conditional propability stored in a Map(second element).
    */
   def calcConditionalPropabilitiesForEachClass(data: Map[Any, Set[(String, Map[Any, Int])]],classCounts:Map[Any,Int]):
-  Map[Any,Set[(String, Map[Any, Double])]] = ???
+  Map[Any,Set[(String, Map[Any, Double])]] =
+    data.map(x => (x._1, x._2.map(y => (y._1, y._2.map(z => (z._1, z._2.toDouble / classCounts(x._1)))))))
 
   /**
    * This function should calculate the class propability values for each class.
@@ -103,6 +109,7 @@ object NaiveBayes {
    */
   def calcClassValuesForPrediction(record:Map[String,Any], conditionalProps: Map[Any,Set[(String, Map[Any, Double])]],
                                    priorProps:Map[Any,Double]):Map[Any,Double]= ???
+  
   /**
    * This function finds the class with the highest propability
    *
