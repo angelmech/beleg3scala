@@ -8,35 +8,35 @@ object MapReduce {
   val dateFormatPattern= "yyyy.MM.dd G 'at' HH:mm:ss z"
   val sdf= new SimpleDateFormat(dateFormatPattern,Locale.ENGLISH)
 
+
+  // data = (1<Datum und Uhrzeit>, 2<Nutzer>, 3<Jobname>, 4<Dauer in Sekunden>)
+  //        (DateFormat,           String,     String,     Int)
+
+  // (KeyIn, ValueIn, KeyMOut, ValueMOut, KeyROut, ValueROut)
+
   /*
     Write a function that determines how many jobs each user sumbmitted
     Result: Map (key:user, value: number)
    */
-  def numberOfJobsPerUser(l:List[((Int,(String,String,String,Int)))]):List[(String,Int)]={
-  ???
-   /* BasicOperations.mapReduce[...](
-
-      kv => ...,
-      kv=> ...,
+  def numberOfJobsPerUser(l:List[(Int,(String,String,String,Int))]):List[(String,Int)] =
+    BasicOperations.mapReduce[Int, (String,String,String,Int), String, Int, String, Int](
+      kv => List((kv._2._2, 1)),
+      kv => List((kv._1, kv._2.sum)),
       l
-    )*/
-  }
+    )
+
+
 
   /*
   Write a function that determines how many times a job name was used from each user
   Result: Map (key:(user,Job), value: number)
  */
   def numberOfJobsPerUserUsingACertainName(l:List[(Int,(String,String,String,Int))]):List[((String,String),Int)]={
-  ???
-    /*
-    BasicOperations.mapReduce[...](
-
-      kv => ...,
-      kv => ...),
+    BasicOperations.mapReduce[Int, (String, String, String, Int), (String, String), Int, (String, String), Int](
+      kv => List(((kv._2._2, kv._2._3), 1)),
+      kv => List((kv._1, kv._2.sum)),
       l
     )
-
-     */
   }
 
   /*
@@ -44,16 +44,11 @@ object MapReduce {
     Result: List(jobnames)
 */
   def distinctNamesOfJobs(l:List[(Int,(String,String,String,Int))]):List[String]={
-    ???
-    /*
-    BasicOperations.mapReduce[...](
-
-      kv=> ...,
-      kv => ...,
+    BasicOperations.mapReduce[Int, (String, String, String, Int), String, Int, String, Int](
+      kv => List((kv._2._3, 1)),
+      kv => List((kv._1, 1)),
       l
     ).map(_._1)
-
-     */
   }
 
   /*
@@ -61,16 +56,11 @@ object MapReduce {
     Result: Map (key:("more" or "less"), value: number)
   */
   def moreThan20Seconds(l:List[(Int,(String,String,String,Int))]):List[(String,Int)]={
-    ???
-    /*
-    BasicOperations.mapReduce[...](
-
-      kv=> ...,
-      kv=> ...,
+    BasicOperations.mapReduce[Int, (String, String, String, Int), String, Int, String, Int](
+      kv => List((if (kv._2._4 > 20) "more" else "less", 1)),
+      kv => List((kv._1, kv._2.sum)),
       l
     )
-
-     */
   }
 
   /*
@@ -78,16 +68,12 @@ object MapReduce {
     Result: Map (key:day- format "YYYY-MM-dd" , value: number)
   */
   def numberOfJobsPerDay(l:List[(Int,(String,String,String,Int))]):List[(String,Int)]={
-    ???
-    /*
-    val outDF= new SimpleDateFormat("YYYY-MM-dd")
-
-    BasicOperations.mapReduce[...](
-
-      kv=> ...,
-      kv=> ...,
+    val outputFormat = new SimpleDateFormat("yyyy-MM-dd")
+    BasicOperations.mapReduce[Int, (String, String, String, Int), String, Int, String, Int](
+      kv => List((outputFormat.format(sdf.parse(kv._2._1)), 1)),
+      kv => List((kv._1, kv._2.sum)),
       l
-    )*/
+    )
   }
 
 }
