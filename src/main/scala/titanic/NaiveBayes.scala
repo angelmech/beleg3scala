@@ -108,8 +108,9 @@ object NaiveBayes {
    * @return A Map that consists of all classes (as key) and their corresponding propability
    */
   def calcClassValuesForPrediction(record:Map[String,Any], conditionalProps: Map[Any,Set[(String, Map[Any, Double])]],
-                                   priorProps:Map[Any,Double]):Map[Any,Double]= ???
-  
+                                   priorProps:Map[Any,Double]):Map[Any,Double]=
+    conditionalProps.map(x => (x._1, record.foldLeft(priorProps(x._1))((acc, r) => acc * x._2.toMap.get(r._1).map(m => m.getOrElse(r._2, 0.0)).getOrElse(0.0))))
+
   /**
    * This function finds the class with the highest propability
    *
@@ -171,7 +172,8 @@ object NaiveBayes {
   def calcConditionalPropabilitiesForEachClassWithSmoothing
   (data: Map[Any, Set[(String, Map[Any, Int])]],  attValues:Map[String,Set[Any]],
    classCounts:Map[Any,Int]):
-  Map[Any,Set[(String, Map[Any, Double])]] = ???
+  Map[Any,Set[(String, Map[Any, Double])]] =
+    data.map(x => (x._1, x._2.map(y => (y._1, attValues(y._1).map(v => (v, (y._2.getOrElse(v, 0) + 1).toDouble / (classCounts(x._1) + attValues(y._1).size))).toMap))))
 
   /**
    * This function builds the model using add one smoothing.
