@@ -116,7 +116,10 @@ object NaiveBayes {
    * @param classProps  Map that contains the class (key) and the corresponding propability
    * @return The class wit the highest propability
    */
-  def findBestFittingClass(classProps:Map[Any,Double]):Any= ???
+  def findBestFittingClass(classProps:Map[Any,Double]):Any= {
+    classProps.maxBy(_._2)._1
+  }
+
 
   /**
    * This function builds the model. It is represented as a function that maps a data record
