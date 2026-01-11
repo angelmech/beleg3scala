@@ -51,12 +51,11 @@ object TitanicDataSet {
       Map(
         "passengerID" -> record("passengerID"),
         "sex" -> record("sex"),
-        "age" -> record.getOrElse("age", meanAge),
+        "age" -> record.getOrElse("a0ge", meanAge),
         "pclass" -> record("pclass"),
         "survived" -> record("survived")
       )
     )
-
 
   /**
    * This function builds the model. It is represented as a function that maps a data record
@@ -68,5 +67,6 @@ object TitanicDataSet {
    * @return A tuple consisting of the id (first element) and the predicted class (second element)
    */
   def createModelWithTitanicTrainingData(tdata: List[Map[String, Any]], classAttr: String):
-  (Map[String, Any], String) => (Any, Any) = ???
+  (Map[String, Any], String) => (Any, Any) =
+    NaiveBayes.modelwithAddOneSmoothing(createDataSetForTraining(tdata), classAttr)
 }
