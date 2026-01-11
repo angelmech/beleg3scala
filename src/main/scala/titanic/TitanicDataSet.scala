@@ -24,7 +24,7 @@ object TitanicDataSet {
    * @return A Map that contains the attribute names (key) and the number of missings (value)
    */
   def countAllMissingValues(data: List[Map[String, Any]], attList: List[String]): Map[String, Int] =
-    attList.map(a => (a, data.count(d => !d.contains(a)))).toMap
+    attList.map(a => (a, data.count(d => !d.contains(a)))).filter(x => x._2 > 0).toMap
 
   /**
    * This function should extract a set of given attributes from a record
@@ -45,7 +45,18 @@ object TitanicDataSet {
    * @param data Training Data Set that needs to be prepared
    * @return Prepared Data Set for using it with Naive Bayes
    */
-  def createDataSetForTraining(data: List[Map[String, Any]]): List[Map[String, Any]] = ???
+  def createDataSetForTraining(data: List[Map[String, Any]]): List[Map[String, Any]] =
+    val meanAge = data.flatMap(_.get("age")).map(_.toString.toDouble).sum / data.flatMap(_.get("age")).size
+    data.map(record =>
+      Map(
+        "passengerID" -> record("passengerID"),
+        "sex" -> record("sex"),
+        "age" -> record.getOrElse("age", meanAge),
+        "pclass" -> record("pclass"),
+        "survived" -> record("survived")
+      )
+    )
+
 
   /**
    * This function builds the model. It is represented as a function that maps a data record
