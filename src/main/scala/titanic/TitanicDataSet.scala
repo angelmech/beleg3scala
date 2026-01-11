@@ -24,7 +24,7 @@ object TitanicDataSet {
    * @return A Map that contains the attribute names (key) and the number of missings (value)
    */
   def countAllMissingValues(data: List[Map[String, Any]], attList: List[String]): Map[String, Int] =
-    attList.map(x => (x, data.count(y => !y.contains(x)))).filter(z => z._2 > 0).toMap
+    attList.map(a => (a, data.count(d => !d.contains(a)))).toMap
 
   /**
    * This function should extract a set of given attributes from a record
@@ -34,7 +34,8 @@ object TitanicDataSet {
    * @return A Map that contains only the attributes that should be extracted
    *
    */
-  def extractTrainingAttributes(record: Map[String, Any], attList: List[String]): Map[String, Any] = ???
+  def extractTrainingAttributes(record: Map[String, Any], attList: List[String]): Map[String, Any] =
+    record.filter(x => attList.contains(x._1))
 
   /**
    * This function should create the training data set. It extracts the necessary attributes,
