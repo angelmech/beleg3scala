@@ -1,0 +1,4 @@
+Erreichte Genauigkeit: 77.9%
+
+Verwendete Attribute: age, sex, pclass
+- age: Fehlende Werte wurden mit dem Mittelwert (mean) gefüllt

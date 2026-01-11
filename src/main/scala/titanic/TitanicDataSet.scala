@@ -51,7 +51,7 @@ object TitanicDataSet {
       Map(
         "passengerID" -> record("passengerID"),
         "sex" -> record("sex"),
-        "age" -> record.getOrElse("a0ge", meanAge),
+        "age" -> record.getOrElse("age", meanAge),
         "pclass" -> record("pclass"),
         "survived" -> record("survived")
       )
