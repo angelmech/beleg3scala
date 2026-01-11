@@ -8,7 +8,12 @@ object TitanicDataSet {
    *
    * @return The model represented as a function
    */
-  def simpleModel: (Map[String, Any], String) => (Any, Any) = ???
+  def simpleModel: (Map[String, Any], String) => (Any, Any) =
+    (record, idAttr) => {
+      val id = record(idAttr)
+      val survived = if (record.getOrElse("sex", "") == "female") 1 else 0
+      (id, survived)
+    }
 
   /**
    * This function should count for a given attribute list, how often an attribute is
@@ -18,7 +23,8 @@ object TitanicDataSet {
    * @param attList List of attributes where the missings should be counted
    * @return A Map that contains the attribute names (key) and the number of missings (value)
    */
-  def countAllMissingValues(data: List[Map[String, Any]], attList: List[String]): Map[String, Int] = ???
+  def countAllMissingValues(data: List[Map[String, Any]], attList: List[String]): Map[String, Int] =
+    attList.map(x => (x, data.count(y => !y.contains(x)))).filter(z => z._2 > 0).toMap
 
   /**
    * This function should extract a set of given attributes from a record
