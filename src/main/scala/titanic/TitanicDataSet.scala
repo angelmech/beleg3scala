@@ -10,10 +10,12 @@ object TitanicDataSet {
    */
   def simpleModel: (Map[String, Any], String) => (Any, Any) =
     (record, idAttr) => {
-      val id = record(idAttr)
+      val id = record(idAttr) //Extrahiert die ID aus dem Datensatz
       val survived = if (record.getOrElse("sex", "") == "female") 1 else 0
       (id, survived)
     }
+    //nimmt data input -> output tupe (id, prediction)
+    //wenn geschlecht existiert und weiblich -> 1 sonst 0, also überleben oder nicht
 
   /**
    * This function should count for a given attribute list, how often an attribute is
@@ -25,6 +27,9 @@ object TitanicDataSet {
    */
   def countAllMissingValues(data: List[Map[String, Any]], attList: List[String]): Map[String, Int] =
     attList.map(a => (a, data.count(d => !d.contains(a)))).filter(x => x._2 > 0).toMap
+    // !d ==... also wenn schlüssel a nicht in d exisitert
+    // tupel (a, anzahl der fehlenden werte für dieses attribut)
+    // filtert nur die attribute raus, die auch fehlende werte haben
 
   /**
    * This function should extract a set of given attributes from a record
@@ -36,6 +41,7 @@ object TitanicDataSet {
    */
   def extractTrainingAttributes(record: Map[String, Any], attList: List[String]): Map[String, Any] =
     record.filter(x => attList.contains(x._1))
+    // ist gewünschtes attribut(der schlüssel) in der liste? true -> behalten, sonst wegwerfen
 
   /**
    * This function should create the training data set. It extracts the necessary attributes,
@@ -56,6 +62,14 @@ object TitanicDataSet {
         "survived" -> record("survived")
       )
     )
+    // transformiere jeden datensatz in neues format mit gewünschten attributen
+    // wenn alter exisitert nutze es, sonst mean age
+
+    // mittelwert für alter berechnen, alle age werte
+    //mit .get sicherer zugriff
+    // flatmap flacht die option werte ab
+    // alter zu string zu double, any kann nicht direkt in double konvertiert werden
+    // dann summe / anzahl der alters werte, wobei wieder flatmap zum abflachen von Option genutzt wird
 
   /**
    * This function builds the model. It is represented as a function that maps a data record
@@ -69,4 +83,7 @@ object TitanicDataSet {
   def createModelWithTitanicTrainingData(tdata: List[Map[String, Any]], classAttr: String):
   (Map[String, Any], String) => (Any, Any) =
     NaiveBayes.modelwithAddOneSmoothing(createDataSetForTraining(tdata), classAttr)
+
+    // classAttr = attribut dass wir vorhersagen wollen (survived)#
+    // wie simpleModel aber mit machine learning,n utzt die naive bayes klasse
 }

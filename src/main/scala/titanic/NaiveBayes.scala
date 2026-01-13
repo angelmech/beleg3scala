@@ -23,6 +23,8 @@ object NaiveBayes {
    */
   def getAttributes(data:List[Map[String, Any]]):Set[String]=
     data.flatMap(_.keys).toSet
+    //flachziehen aller keys im data set
+  // toSet damit keine duplikate
 
   /**
    * Extracts all attribute values that occur in a data set.
@@ -92,6 +94,12 @@ object NaiveBayes {
   def calcConditionalPropabilitiesForEachClass(data: Map[Any, Set[(String, Map[Any, Int])]],classCounts:Map[Any,Int]):
   Map[Any,Set[(String, Map[Any, Double])]] =
     data.map(x => (x._1, x._2.map(y => (y._1, y._2.map(z => (z._1, z._2.toDouble / classCounts(x._1)))))))
+  // x iteration über klasse
+  // y iteration über attribute y._1 attributname
+  // z._1 attributwert, z._2 anzahl vorkommen
+  // teilt man durch dessen allgemeine anzahl vorkommen von der aktuellen klasse x._1
+
+
 
   /**
    * This function should calculate the class propability values for each class.
@@ -110,6 +118,13 @@ object NaiveBayes {
   def calcClassValuesForPrediction(record:Map[String,Any], conditionalProps: Map[Any,Set[(String, Map[Any, Double])]],
                                    priorProps:Map[Any,Double]):Map[Any,Double]=
     conditionalProps.map(x => (x._1, record.foldLeft(priorProps(x._1))((acc, r) => acc * x._2.toMap.get(r._1).map(m => m.getOrElse(r._2, 0.0)).getOrElse(0.0))))
+  //iteriert über jede klasse
+  //foldleft über jedes attribut im record
+  //startwert ist priror wahrscheinlichkeit der klasse
+  // r ist ein key value paar im record, attrbituname und wert
+  // das foldleft multipliziert alle bedingten Wahrscheinlichkeiten der Attribute
+  //x._2.toMap.get(r._1) nimm hier also geschlecht
+  // und falls ein wert dafür vorhanden ist ,z.b. "m" dann nimm es und berechne den naive bayes
 
   /**
    * This function finds the class with the highest propability
@@ -119,6 +134,7 @@ object NaiveBayes {
    */
   def findBestFittingClass(classProps:Map[Any,Double]):Any= {
     classProps.maxBy(_._2)._1
+    // das größte value nehmen und dessen key zurückgeben
   }
 
 
@@ -174,6 +190,10 @@ object NaiveBayes {
    classCounts:Map[Any,Int]):
   Map[Any,Set[(String, Map[Any, Double])]] =
     data.map(x => (x._1, x._2.map(y => (y._1, attValues(y._1).map(v => (v, (y._2.getOrElse(v, 0) + 1).toDouble / (classCounts(x._1) + attValues(y._1).size))).toMap))))
+  //iteration über alle möglichen werte eines attributes, nicht nur "m" oder "w"
+  // damit auch werte berücksichtigt werden die in der klasse nicht vorkommen, also count 0 nutzen wir attValues
+
+
 
   /**
    * This function builds the model using add one smoothing.
